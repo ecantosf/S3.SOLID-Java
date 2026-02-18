@@ -1,7 +1,5 @@
-import java.util.ArrayList;
-import java.util.List;
-
 public class User {
+
     private String name;
     private String email;
     private String password;
@@ -12,26 +10,6 @@ public class User {
         this.password = password;
     }
 
-    public void register() {
-
-        if (email == null || !email.contains("@") || !email.contains(".")) {
-            throw new IllegalArgumentException("Invalid email address.");
-        }
-
-        if (password == null || password.length() < 8 || !password.matches(".*[A-Z].*")) {
-            throw new IllegalArgumentException("Password must be at least 8 characters long and contain an uppercase letter.");
-        }
-
-        System.out.println("📧 Sending confirmation email to: " + email);
-
-        boolean userConfirmed = true;
-        if (!userConfirmed) {
-            System.out.println("⚠️ User did not confirm registration.");
-            return;
-        }
-    }
-
-    // Getters
     public String getName() {
         return name;
     }
@@ -40,8 +18,11 @@ public class User {
         return email;
     }
 
-    public String getPassword() {
-        return password;
-    }
+    public String getPassword() {return password;}
 
+    public void setName(String name) { this.name = name; }
+
+    public void setEmail(String email) { this.email = email; }
+
+    public void setPassword(String password) { this.password = password; }
 }

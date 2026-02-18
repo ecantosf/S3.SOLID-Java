@@ -3,13 +3,34 @@
 ## S - Single Responsibility Principle (Principi de Responsabilitat Única)
 
 ### Què estava malament?
-[Explica quina part de la classe original tenia més d'una responsabilitat o feia tasques que no li correspondrien]
+A banda dels errors de disseny, la classe crida a dues llibreries que no s'utilitzen, el userConfirmed sempre serà true 
+i el mètode buit register (void) conté un return que no fa cap funció. A més, els missatges de les exceptions no són 
+prou precisos.
 
 ### Per què incomplia el principi?
-[Descriu per què això viola el principi SRP - cada classe hauria de tenir només una raó per canviar]
+El principi PRS diu que una classe hauria de tenir una única responsabilitat o, dit d'una altra manera,
+una única raó per canviar. En el cas d'User hi ha tres:
+- Representar les dades de l'usuari (name, email, password)
+- Validar les dades de l'usuari, comprovant email i password
+- Gestionar el registre de l'usuari, enviant email de confirmació
+
 
 ### Quina solució has aplicat i per què?
-[Explica com has separat les responsabilitats en diferents classes i per què aquesta solució respecta el principi]
+La solució passa per separar les responsabilitats en diferents classes, que alhora respetin el PSR.
+En aquest cas, es desglossaria en vàries classes:
+- **User** es pot mantenir només per a dades
+- **UserValidator** per validar correu electrònic i contrasenya
+- **EmailService** per a l'enviament d'emails (en aquest cas simplement és un print)
+- **UserManagement** per a la gestió del registre
+- **Main** per instanciar i verificar l'us.
+
+En concret, per a cada classe:
+- A **User**: es manté únicament atributs, constructor i Getters i Setter.
+- A **UserValidator**: es crea el mètode validate() que crida als mètodes de validació de correu i contrasenya. En aquest
+    té sentit mantenir aquests dos mètodes vinculats en una mateixa classe per estar estretament relacionats.
+- A **EmailService**: envia confirmació de registre de correu. Resolt amb un print.
+- A **UserManagement**: controla tot el flux del programa: validació, registre correcte i avís de confirmació
+- A **Main**: instancia la classe User i verifica el funcionament en un cas favorable i un desfavorable.
 
 ---
 
@@ -67,4 +88,4 @@
 
 ## Reflexió final
 
-[Opcional: Afegeix aquí una reflexió global sobre com ha millorat el codi després d'aplicar els principis SOLID, què has après, o quins reptes has trobat durant la refactorització]
+En tots els casos, hem intentat mantenir el codi llegible, modular i fàcil de mantenir.
