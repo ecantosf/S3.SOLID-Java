@@ -93,7 +93,7 @@ public class Desament {
 - **4️⃣ Exemple d'ús:**
 
 ```java
-public class Main {
+public class MainD {
     public static void main(String[] args) {
         Informe informe = new Informe("Aquest és el contingut de l'informe.");
 

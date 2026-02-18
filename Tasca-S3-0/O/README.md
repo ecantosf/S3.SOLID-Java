@@ -72,7 +72,7 @@ public class CalculadoraDescomptes {
 - **4️⃣ Exemple d'ús:**
 
 ```java
-public class Main {
+public class MainD {
     public static void main(String[] args) {
         Producte producte = new Producte("Portàtil", 1000);
 

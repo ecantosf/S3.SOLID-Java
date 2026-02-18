@@ -1,6 +1,6 @@
 # Anàlisis del principis SOLID, refactorització de la classe i reflexió sobre els canvis
 
-## S - Single Responsibility Principle (Principi de Responsabilitat Única)
+## S - Single Responsibility Principle (SRP)
 
 ### Què estava malament?
 A banda dels errors de disseny, la classe crida a dues llibreries que no s'utilitzen, el userConfirmed sempre serà true 
@@ -22,7 +22,7 @@ En aquest cas, es desglossaria en vàries classes:
 - **UserValidator** per validar correu electrònic i contrasenya
 - **EmailService** per a l'enviament d'emails (en aquest cas simplement és un print)
 - **UserManagement** per a la gestió del registre
-- **Main** per instanciar i verificar l'us.
+- **MainD** per instanciar i verificar l'us.
 
 En concret, per a cada classe:
 - A **User**: es manté únicament atributs, constructor i Getters i Setter.
@@ -30,7 +30,7 @@ En concret, per a cada classe:
     té sentit mantenir aquests dos mètodes vinculats en una mateixa classe per estar estretament relacionats.
 - A **EmailService**: envia confirmació de registre de correu. Resolt amb un print.
 - A **UserManagement**: controla tot el flux del programa: validació, registre correcte i avís de confirmació
-- A **Main**: instancia la classe User i verifica el funcionament en un cas favorable i un desfavorable.
+- A **MainD**: instancia la classe User i verifica el funcionament en un cas favorable i un desfavorable.
 
 ---
 
@@ -73,16 +73,37 @@ En concret, per a cada classe:
 
 ---
 
-## D - Dependency Inversion Principle (Principi d'Inversió de Dependències)
+## D - Dependency Inversion Principle (DIP)
 
 ### Què estava malament?
-[Explica si les classes d'alt nivell depenien directament de classes concretes de baix nivell]
+En el codi actual, ServicePerson (mòdul d'alt nivell) depèn directament de MySql (mòdul de baix nivell). 
+Això crea un acoblament fort no desitjat.
 
 ### Per què incomplia el principi?
-[Descriu per què això viola el principi DIP - els mòduls d'alt nivell no han de dependre de mòduls de baix nivell, ambdós han de dependre d'abstraccions]
+- El mòdul d'alt nivell (ServicePerson) depèn d'un mòdul de baix nivell (MySql): Segons DIP, ambdós haurien
+  de dependre d'abstraccions, no d'implementacions concretes.
+- És difícil canviar la implementació: Si volguéssim canviar de MySQL a PostgreSQL, hauríem de modificar
+  la classe ServicePerson.
+- Dificulta les proves unitàries: No podem provar ServicePerson sense utilitzar una base de dades real.
+- L'acoblament fa que l'aplicació sigui més rígida i menys adaptable a canvis.
 
 ### Quina solució has aplicat i per què?
-[Explica com has introduït abstraccions (interfícies/classes abstractes) per invertir les dependències]
+Cal introduir abstraccions per invertir les dependències. Així, tant el mòdul d'alt nivell 
+com el de baix nivell depenen de la mateixa abstracció, invertint la direcció de la dependència 
+original. En concret:
+- Crear una abstracció (interfície)
+- Fer que la classe de baix nivell implementi l'abstracció
+- Fer que el mòdul d'alt nivell depengui de l'abstracció. Amb injecció per constructor
+
+En concret, per a cada classe:
+- A **Database**: nova interfície
+- A **MySQL**: modificar amb implements. Ara depèn de l'abstracció (Database) enlloc de ser una dependència 
+  directa per a ServicePerson.
+- A **Person**: sense canvis doncs no conté dependències externes
+- A **ServicePerson**:  injecció de dependència per constructor. Ara depèn de l'abstracció Database enlloc de 
+  la implementació concreta MySql. La dependència es rep per constructor.
+- A **Main**: classe nova d'exemple.
+
 
 ---
 

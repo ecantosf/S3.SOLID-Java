@@ -90,7 +90,7 @@ public class GestorNotificacions {
 - **4️⃣ Ara pots injectar diferents canals sense modificar GestorNotificacions:**
 
 ```java
-public class Main {
+public class MainD {
     public static void main(String[] args) {
         CanalNotificacio canal = new EmailService(); // o new SmsService(), new PushService()...
         GestorNotificacions gestor = new GestorNotificacions(canal);
