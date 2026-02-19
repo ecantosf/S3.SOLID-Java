@@ -29,7 +29,8 @@ En concret, per a cada classe:
 - A **UserValidator**: es crea el mètode validate() que crida als mètodes de validació de correu i contrasenya. En aquest
     té sentit mantenir aquests dos mètodes vinculats en una mateixa classe per estar estretament relacionats.
 - A **EmailService**: envia confirmació de registre de correu. Resolt amb un print.
-- A **UserManagement**: controla tot el flux del programa: validació, registre correcte i avís de confirmació
+- A **UserManagement**: controla tot el flux del programa: validació, registre correcte i avís de confirmació. 
+    Es prescindeix de userConfirmed per ser dead code (sempre retornaria true)
 - A **MainD**: instancia la classe User i verifica el funcionament en un cas favorable i un desfavorable.
 
 ---
@@ -37,13 +38,33 @@ En concret, per a cada classe:
 ## O - Open/Closed Principle (Principi Obert/Tancat)
 
 ### Què estava malament?
-[Explica quina part del codi requeria modificacions per afegir noves funcionalitats]
+El codi original tenia una cadena d'instruccions condicionals if/else dins del mètode play() per determinar quin so 
+reproduir segons l'instrument. Per afegir un nou instrument hauríem de modificar la classe InstrumentPlayer 
+afegint un nou else if.
 
 ### Per què incomplia el principi?
-[Descriu per què això viola el principi OCP - les classes haurien d'estar obertes per a extensió però tancades per a modificació]
+Viola l'OCP perquè la classe no estava tancada a modificacions i, cada vegada que volguéssim afegir un nou instrument, 
+hauríem de modificar el codi existent. Això pot provocar errors, dificulta el manteniment i viola el principi que les 
+classes han d'estar obertes a l'extensió però tancades a la modificació.
 
 ### Quina solució has aplicat i per què?
-[Explica com has canviat el disseny per permetre extensions sense modificar codi existent (interfícies, classes abstractes, etc.)]
+- He creat una interfície Instrument que defineix el contracte comú
+- He implementat classes concretes per a cada instrument
+- He creat una InstrumentFactory que centralitza la creació d'instruments
+- Així, per afegir un nou instrument només cal crear una nova classe que implementi la interfície i registrar-la, sense 
+  modificar el codi existent.
+
+En concret, per a cada classe i interficie:
+- A **Instrument**: defineix el contracte (mètodes play() i getName()) que totes les classes d'instruments han de 
+   complir, permetent el polimorfisme
+- A **Guitar, Piano, Drums**: implementen la interfície Instrument amb el comportament específic de cada instrument
+- A **UnkownInstrument**: implementa Instrument per manejar casos d'instruments no trobats
+- A **InstrumentPlayer**: queda tancat a modificacions perquè només invoca el mètode play() polimòrficament sense saber
+   quin instrument concret és
+- A **InstrumentCatalog**: actua com a punt central d'extensió on es registren els instruments disponibles; és l'únic 
+   lloc que cal modificar per afegir-ne de nous
+- A **MainO**: només fa servir InstrumentPlayer sense necessitar canvis en afegir nous instruments, demostrant que el 
+   sistema és extensible.
 
 ---
 
@@ -80,11 +101,11 @@ En el codi actual, ServicePerson (mòdul d'alt nivell) depèn directament de MyS
 Això crea un acoblament fort no desitjat.
 
 ### Per què incomplia el principi?
-- El mòdul d'alt nivell (ServicePerson) depèn d'un mòdul de baix nivell (MySql): Segons DIP, ambdós haurien
+- El mòdul d'alt nivell (ServicePerson) depèn d'un mòdul de baix nivell (MySql). Segons DIP, ambdós haurien
   de dependre d'abstraccions, no d'implementacions concretes.
-- És difícil canviar la implementació: Si volguéssim canviar de MySQL a PostgreSQL, hauríem de modificar
+- És difícil canviar la implementació. Si volguéssim canviar de MySQL a PostgreSQL, hauríem de modificar
   la classe ServicePerson.
-- Dificulta les proves unitàries: No podem provar ServicePerson sense utilitzar una base de dades real.
+- Dificulta les proves unitàries.
 - L'acoblament fa que l'aplicació sigui més rígida i menys adaptable a canvis.
 
 ### Quina solució has aplicat i per què?

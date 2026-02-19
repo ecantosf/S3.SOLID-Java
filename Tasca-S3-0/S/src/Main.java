@@ -3,17 +3,17 @@ public class Main {
         User userValid = new User("Eduard Cantos", "eduard@mail.com", "Password123");
         User userNotValid = new User(null, "eduard_mail.com", "passw");
 
-        UserManagement registrationService = new UserManagement();
+        UserManagement userManagement = new UserManagement();
 
         try {
-            registrationService.register(userValid);
+            userManagement.register(userValid);
             System.out.println("Usuari registrat correctament!");
         } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
         }
 
         try {
-            registrationService.register(userNotValid);
+            userManagement.register(userNotValid);
             System.out.println("Usuari registrat correctament!");
         } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
