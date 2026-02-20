@@ -71,13 +71,34 @@ En concret, per a cada classe i interficie:
 ## L - Liskov Substitution Principle (Principi de Substitució de Liskov)
 
 ### Què estava malament?
-[Explica si hi havia subclasses que no es podien substituir per les seves classes base sense alterar el comportament del programa]
+El problema principal és que la classe Ghost no es pot substituir per la classe base Character sense alterar el 
+comportament del programa. Quan un Ghost rep l'mètode takeDamage(), llança una excepció en lloc de comportar-se com 
+un Character normal. Això trenca el contracte de la classe base.
 
 ### Per què incomplia el principi?
-[Descriu per què això viola el principi LSP - les subclasses han de poder substituir les seves classes base]
+El principi de Liskov (LSP) estableix que si tens una classe base Character i una subclasse Ghost, hauries de poder 
+utilitzar Ghost a qualsevol lloc on esperis un Character sense que el programa falli o es comporti de manera inesperada. 
+En aquest cas:
+- La classe base Character defineix que takeDamage() sempre ha de processar el dany (imprimeix un missatge)
+- La subclasse Ghost canvia aquest comportament llançant una excepció
+- Això viola LSP perquè el programa que espera un Character pot rebre un Ghost i fallar inesperadament
 
 ### Quina solució has aplicat i per què?
-[Explica com has reestructurat les jerarquies o modificat les classes per garantir la substitució correcta]
+1. Eliminant l'herència entre Ghost i Character perquè un fantasma no és un personatge que pot rebre dany físic
+2. Creant una interfície Attackable que defineix el contracte comú d'atac
+3. Separant la responsabilitat de rebre dany en una interfície Damageable que només implementen els personatges
+   que poden rebre dany
+4. Ghost implementa Attackable però no Damageable, reflectint correctament que no pot rebre dany físic
+
+En concret, per a cada classe i interficie:
+- A **Attackable**: defineix el mètode attack() que totes les entitats que poden atacar han d'implementar
+- A **Damageable**: defineix el mètode takeDamage(int points) que només implementen les entitats que poden rebre dany
+- A **Character**: classe abstracta que implementa Attackable i Damageable, servint com a base per a personatges que 
+   poden atacar i rebre dany
+- A **Warriorr**: extén Character i implementa attack() i takeDamage() amb el comportament específic del guerrer
+- A **Ghost**:  implementa només Attackable (però no Damageable), reflectint que pot atacar però no pot rebre dany físic
+- A **MainL**: demostra que Warrior pot ser tractat com Attackable i Damageable, mentre que Ghost només pot ser 
+   Attackable, evitant errors en temps de compilació.
 
 ---
 
