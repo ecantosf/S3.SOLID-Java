@@ -1,4 +1,4 @@
-public class Main {
+public class MainS {
     public static void main(String[] args) {
         User userValid = new User("Eduard Cantos", "eduard@mail.com", "Password123");
         User userNotValid = new User(null, "eduard_mail.com", "passw");

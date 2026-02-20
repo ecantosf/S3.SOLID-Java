@@ -1,3 +1,4 @@
+
 # 🔌 I - Principi de Segregació d’Interfícies (ISP)
 
 ## 🧠 Què és?

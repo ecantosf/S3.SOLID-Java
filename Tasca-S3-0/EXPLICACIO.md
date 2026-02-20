@@ -31,7 +31,7 @@ En concret, per a cada classe:
 - A **EmailService**: envia confirmació de registre de correu. Resolt amb un print.
 - A **UserManagement**: controla tot el flux del programa: validació, registre correcte i avís de confirmació. 
     Es prescindeix de userConfirmed per ser dead code (sempre retornaria true)
-- A **MainD**: instancia la classe User i verifica el funcionament en un cas favorable i un desfavorable.
+- A **MainS**: instancia la classe User i verifica el funcionament en un cas favorable i un desfavorable.
 
 ---
 
@@ -84,13 +84,39 @@ En concret, per a cada classe i interficie:
 ## I - Interface Segregation Principle (Principi de Segregació d'Interfícies)
 
 ### Què estava malament?
-[Explica si hi havia interfícies "gruixudes" que obligaven a implementar mètodes que no eren necessaris]
+La interfície MachineActions era una fat interface que contenia 5 mètodes: turnOn(), turnOff(), heat(), cool() i wash().
+Això obligava a les classes AirConditioner i WashingMachine a implementar tots els mètodes, encara que alguns no 
+tinguessin sentit per a elles: AirConditioner havia d'implementar wash() encara que no renta res o WashingMachine havia 
+d'implementar heat() i cool() encara que no escalfa ni refreda
 
 ### Per què incomplia el principi?
-[Descriu per què això viola el principi ISP - és millor tenir interfícies petites i específiques que una de sola gran]
+- Les classes estan obligades a implementar mètodes que no necessiten.
+- En el codi actual, AirConditioner.wash() imprimeix "Wash operation not supported", la qual cosa és un senyal clar 
+   que aquest mètode no hauria d'estar aquí.
+- Una interfície hauria de contenir només els mètodes que són realment necessaris per a les classes que la implementen.
+- Les interfícies massa grans fan que el codi sigui menys flexible i més difícil de mantenir.
 
 ### Quina solució has aplicat i per què?
-[Explica com has dividit les interfícies en altres més petites i cohesionades]
+He dividit la interfície gran en tres interfícies més petites i cohesionades:
+1. SwitchControl: Conté els mètodes bàsics que totes les màquines necessiten (turnOn(), turnOff())
+2. TemperatureControl: Conté els mètodes relacionats amb el control de temperatura (heat(), cool())
+3. WashControl: Conté el mètode específic per rentar (wash())
+
+Aquesta solució:
+- Permet que cada classe implementi només les interfícies que necessita
+- Evita mètodes buits o que llancen excepcions
+- És més flexible i permet afegir noves màquines fàcilment
+- Segueix el principi de responsabilitat única a nivell d'interfície
+
+En concret, per a cada classe i interficie:
+- A **SwitchControl, TemperatureControl, WashControl**: són interfícies específiques i cohesionades, cadascuna amb una 
+   única responsabilitat ben definida.
+- A **AirConditioner**: implementa SwitchControl i TemperatureControl, ja que necessita engegar-se, apagar-se, escalfar 
+   i refredar, però no rentar.
+- A **WashingMachine**: implementa SwitchControl i WashControl, ja que necessita engegar-se, apagar-se i rentar, però 
+   no controlar temperatura.
+- A **MainI**: es poden instanciar ambdós tipus de màquines i utilitzar només els mètodes que realment tenen sentit 
+   per a cadascuna.
 
 ---
 
@@ -123,7 +149,7 @@ En concret, per a cada classe:
 - A **Person**: sense canvis doncs no conté dependències externes
 - A **ServicePerson**:  injecció de dependència per constructor. Ara depèn de l'abstracció Database enlloc de 
   la implementació concreta MySql. La dependència es rep per constructor.
-- A **Main**: classe nova d'exemple.
+- A **MainD**: classe nova d'exemple.
 
 
 ---
